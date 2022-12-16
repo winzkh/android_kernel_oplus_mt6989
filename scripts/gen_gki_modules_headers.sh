@@ -103,6 +103,7 @@ generate_header() {
 }
 
 if [ "$(basename "${TARGET}")" = "gki_module_unprotected.h" ]; then
+<<<<<<< HEAD
 	# Union of vendor symbol lists
 	GKI_VENDOR_SYMBOLS="${SYMBOL_LIST}"
 	generate_header "${TARGET}" "${GKI_VENDOR_SYMBOLS}" "unprotected"
@@ -117,6 +118,15 @@ else
 		# Make a temp copy to avoid changing source during pre-processing
 		cp -f "${SYMBOL_LIST}" "${GKI_EXPORTED_SYMBOLS}"
 	fi
+=======
+	# Sorted list of vendor symbols
+	GKI_VENDOR_SYMBOLS="${OUT_DIR}/abi_symbollist.raw"
+
+	generate_header "${TARGET}" "${GKI_VENDOR_SYMBOLS}" "unprotected"
+else
+	# Sorted list of exported symbols
+	GKI_EXPORTED_SYMBOLS="${SRCTREE}/android/abi_gki_protected_exports"
+>>>>>>> 3c8e4d6ed0bc (ANDROID: GKI: Protect exports of protected GKI modules)
 
 	generate_header "${TARGET}" "${GKI_EXPORTED_SYMBOLS}" "protected_exports"
 fi

@@ -16,8 +16,8 @@
  * gki_module_protected_exports.h -- Symbols protected from _export_ by unsigned modules
  * gki_module_unprotected.h -- Symbols allowed to _access_ by unsigned modules
  */
-#include <generated/gki_module_protected_exports.h>
-#include <generated/gki_module_unprotected.h>
+#include "gki_module_protected_exports.h"
+#include "gki_module_unprotected.h"
 
 #define MAX_STRCMP_LEN (max(MAX_UNPROTECTED_NAME_LEN, MAX_PROTECTED_EXPORTS_NAME_LEN))
 
@@ -34,17 +34,8 @@ static int cmp_name(const void *sym, const void *protected_sym)
  */
 bool gki_is_module_protected_export(const char *name)
 {
-	if (NR_UNPROTECTED_SYMBOLS) {
-		return bsearch(name, gki_protected_exports_symbols, NR_PROTECTED_EXPORTS_SYMBOLS,
+	return bsearch(name, gki_protected_exports_symbols, NR_PROTECTED_EXPORTS_SYMBOLS,
 		       MAX_PROTECTED_EXPORTS_NAME_LEN, cmp_name) != NULL;
-	} else {
-		/*
-		 * If there are no symbols in unprotected list; We don't need to
-		 * protect exports as there is no KMI enforcement.
-		 * Treat everything exportable in this case.
-		 */
-		return false;
-	}
 }
 
 /**
