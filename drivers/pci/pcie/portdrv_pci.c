@@ -162,6 +162,8 @@ static void pcie_portdrv_shutdown(struct pci_dev *dev)
 
 	pcie_port_device_remove(dev);
 }
+
+
 static pci_ers_result_t pcie_portdrv_error_detected(struct pci_dev *dev,
 					pci_channel_state_t error)
 {
