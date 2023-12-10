@@ -5238,7 +5238,7 @@ static inline void f2fs_truncate_meta_inode_pages(struct f2fs_sb_info *sbi,
 static inline void f2fs_invalidate_internal_cache(struct f2fs_sb_info *sbi,
 								block_t blkaddr)
 {
-	f2fs_truncate_meta_inode_pages(sbi, blkaddr, 1);
+	invalidate_mapping_pages(META_MAPPING(sbi), blkaddr, blkaddr);
 	f2fs_invalidate_compress_page(sbi, blkaddr);
 }
 
