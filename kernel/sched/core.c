@@ -10820,6 +10820,8 @@ cpu_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
 
 	trace_android_vh_cpu_cgroup_css_alloc(tg, parent_css);
 
+	trace_android_vh_cpu_cgroup_css_alloc(tg, parent_css);
+
 	return &tg->css;
 }
 
