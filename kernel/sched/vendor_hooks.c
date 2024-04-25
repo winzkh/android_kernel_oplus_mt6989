@@ -118,3 +118,4 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(android_vh_prio_inheritance);
 EXPORT_TRACEPOINT_SYMBOL_GPL(android_vh_prio_restore);
 EXPORT_TRACEPOINT_SYMBOL_GPL(android_vh_task_ux_op);
 EXPORT_TRACEPOINT_SYMBOL_GPL(android_vh_set_task_comm);
+EXPORT_TRACEPOINT_SYMBOL_GPL(android_vh_reweight_entity);
