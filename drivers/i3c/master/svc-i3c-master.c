@@ -1668,9 +1668,8 @@ static int svc_i3c_master_remove(struct platform_device *pdev)
 	struct svc_i3c_master *master = platform_get_drvdata(pdev);
 	int ret;
 
-	ret = i3c_master_unregister(&master->base);
-	if (ret)
-		return ret;
+	cancel_work_sync(&master->hj_work);
+	i3c_master_unregister(&master->base);
 
 	pm_runtime_dont_use_autosuspend(&pdev->dev);
 	pm_runtime_disable(&pdev->dev);
