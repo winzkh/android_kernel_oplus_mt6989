@@ -381,7 +381,7 @@ static void xhci_handle_stopped_cmd_ring(struct xhci_hcd *xhci,
 	    !(xhci->xhc_state & XHCI_STATE_DYING)) {
 		xhci->current_cmd = cur_cmd;
 		if (cur_cmd)
-			xhci_mod_cmd_timer(xhci, XHCI_CMD_DEFAULT_TIMEOUT);
+			xhci_mod_cmd_timer(xhci);
 		xhci_ring_cmd_db(xhci);
 	}
 }
