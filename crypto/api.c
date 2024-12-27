@@ -507,6 +507,7 @@ void *crypto_create_tfm_node(struct crypto_alg *alg,
 	tfm = (struct crypto_tfm *)(mem + tfmsize);
 	tfm->__crt_alg = alg;
 	tfm->node = node;
+	refcount_set(&tfm->refcnt, 1);
 
 	err = frontend->init_tfm(tfm);
 	if (err)
