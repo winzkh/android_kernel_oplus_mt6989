@@ -1175,8 +1175,8 @@ retry:
 			spin_unlock(src_ptl);
 
 			if (!locked) {
-				pte_unmap(src_pte);
-				pte_unmap(dst_pte);
+				pte_unmap(&orig_src_pte);
+				pte_unmap(&orig_dst_pte);
 				src_pte = dst_pte = NULL;
 				/* now we can block and wait */
 				folio_lock(src_folio);
