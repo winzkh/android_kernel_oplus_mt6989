@@ -1281,8 +1281,8 @@ retry:
 			src_folio = folio;
 			src_folio_pte = orig_src_pte;
 			if (!folio_trylock(src_folio)) {
-				pte_unmap(src_pte);
-				pte_unmap(dst_pte);
+				pte_unmap(&orig_src_pte);
+				pte_unmap(&orig_dst_pte);
 				src_pte = dst_pte = NULL;
 				put_swap_device(si);
 				si = NULL;
