@@ -1220,6 +1220,9 @@ F2FS_FEATURE_RO_ATTR(seqzone);
 #endif
 F2FS_FEATURE_RW_ATTR(may_compress);
 F2FS_FEATURE_RW_ATTR(may_set_compr_fl);
+#ifdef CONFIG_UNICODE
+F2FS_FEATURE_RO_ATTR(linear_lookup);
+#endif
 
 /* For ATGC */
 F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_ratio, candidate_ratio);
@@ -1404,6 +1407,9 @@ static struct attribute *f2fs_feat_attrs[] = {
 #endif
 	ATTR_LIST(may_compress),
 	ATTR_LIST(may_set_compr_fl),
+#ifdef CONFIG_UNICODE
+	ATTR_LIST(linear_lookup),
+#endif
 	NULL,
 };
 ATTRIBUTE_GROUPS(f2fs_feat);
