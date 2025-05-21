@@ -42,6 +42,7 @@ struct unix_edge {
 	struct list_head stack_entry;
 };
 
+struct unix_sock *unix_get_socket(struct file *filp);
 struct sock *unix_peer_get(struct sock *sk);
 
 #define UNIX_HASH_MOD	(256 - 1)
