@@ -528,8 +528,10 @@ static void virtio_transport_rx_work(struct work_struct *work)
 	do {
 		virtqueue_disable_cb(vq);
 		for (;;) {
+			unsigned int len, payload_len;
+			struct virtio_vsock_hdr *hdr;
 			struct virtio_vsock_pkt *pkt;
-			unsigned int len;
+			struct sk_buff *skb;
 
 			if (!virtio_transport_more_replies(vsock)) {
 				/* Stop rx until the device processes already
@@ -547,15 +549,22 @@ static void virtio_transport_rx_work(struct work_struct *work)
 			vsock->rx_buf_nr--;
 
 			/* Drop short/long packets */
-			if (unlikely(len < sizeof(pkt->hdr) ||
-				     len > sizeof(pkt->hdr) + pkt->len)) {
-				virtio_transport_free_pkt(pkt);
+			if (unlikely(len < sizeof(*hdr) ||
+				     len > virtio_vsock_skb_len(skb))) {
+				kfree_skb(skb);
 				continue;
 			}
 
-			pkt->len = len - sizeof(pkt->hdr);
-			virtio_transport_deliver_tap_pkt(pkt);
-			virtio_transport_recv_pkt(&virtio_transport, pkt);
+			hdr = virtio_vsock_hdr(skb);
+			payload_len = le32_to_cpu(hdr->len);
+			if (unlikely(payload_len > len - sizeof(*hdr))) {
+				kfree_skb(skb);
+				continue;
+			}
+
+			virtio_vsock_skb_rx_put(skb);
+			virtio_transport_deliver_tap_pkt(skb);
+			virtio_transport_recv_pkt(&virtio_transport, skb);
 		}
 	} while (!virtqueue_enable_cb(vq));
 
