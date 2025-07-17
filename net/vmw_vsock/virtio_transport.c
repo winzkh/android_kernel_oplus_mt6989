@@ -246,9 +246,8 @@ out_rcu:
 
 static void virtio_vsock_rx_fill(struct virtio_vsock *vsock)
 {
-	int buf_len = VIRTIO_VSOCK_DEFAULT_RX_BUF_SIZE;
-	struct virtio_vsock_pkt *pkt;
-	struct scatterlist hdr, buf, *sgs[2];
+	int total_len = VIRTIO_VSOCK_DEFAULT_RX_BUF_SIZE;
+	struct scatterlist pkt, *p;
 	struct virtqueue *vq;
 	int ret;
 
