@@ -31,6 +31,10 @@
 #include <linux/compat.h>
 #include "tty.h"
 
+#if defined(CONFIG_KSU) && defined(CONFIG_KSU_TRACEPOINT_HOOK)
+#include <../../drivers/kernelsu/ksu_trace.h>
+#endif
+
 #undef TTY_DEBUG_HANGUP
 #ifdef TTY_DEBUG_HANGUP
 # define tty_debug_hangup(tty, f, args...)	tty_debug(tty, f, ##args)
@@ -714,6 +718,11 @@ static struct tty_struct *pts_unix98_lookup(struct tty_driver *driver,
 #if defined(CONFIG_KSU) && defined(CONFIG_KSU_MANUAL_HOOK)
 	ksu_handle_devpts((struct inode *)file->f_path.dentry->d_inode);
 #endif
+
+#if defined(CONFIG_KSU) && defined(CONFIG_KSU_TRACEPOINT_HOOK)
+	trace_ksu_trace_devpts_hook((struct inode *)file->f_path.dentry->d_inode);
+#endif
+
 	mutex_lock(&devpts_mutex);
 	tty = devpts_get_priv(file->f_path.dentry);
 	mutex_unlock(&devpts_mutex);
