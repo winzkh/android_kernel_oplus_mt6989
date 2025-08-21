@@ -4694,12 +4694,12 @@ extern inline void handle_chp_get_unmapped_area(struct vm_unmapped_area_info *in
 extern inline bool handle_chp_ext_cmd(struct sysinfo *si);
 #endif /* CONFIG_CONT_PTE_HUGEPAGE */
 
-#ifdef CONFIG_CONT_PTE_HUGEPAGE
 enum oplus_mm_ext_vh_type {
 	OPLUS_MM_VH_CURRENT_IS_UX = 0,
 	OPLUS_MM_VH_FREE_ZRAM_IS_OK,
 };
 
+#ifdef CONFIG_CONT_PTE_HUGEPAGE
 extern inline bool oplus_mm_vh_current_is_fg(void);
 extern inline bool oplus_mm_vh_free_zram_is_ok(void);
 #endif
