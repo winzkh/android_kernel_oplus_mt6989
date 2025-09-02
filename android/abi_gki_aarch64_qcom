@@ -2333,6 +2333,7 @@
   pci_enable_device
   pci_enable_pcie_error_reporting
   pci_find_ext_capability
+  pci_find_vsec_capability
   pci_flags
   pci_find_vsec_capability
   pci_free_irq_vectors

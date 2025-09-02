@@ -394045,6 +394045,15 @@ elf_symbol {
   full_name: "pci_find_next_capability"
 }
 elf_symbol {
+  id: 0x969e210d
+  name: "pci_find_vsec_capability"
+  is_defined: true
+  symbol_type: FUNCTION
+  crc: 0x2043b4fb
+  type_id: 0x070e76e8
+  full_name: "pci_find_vsec_capability"
+}
+elf_symbol {
   id: 0xbbf8a63b
   name: "pci_flags"
   is_defined: true
@@ -426049,6 +426058,7 @@ interface {
   symbol_id: 0x63876663
   symbol_id: 0x780d1110
   symbol_id: 0xdea420f5
+  symbol_id: 0x969e210d
   symbol_id: 0xbbf8a63b
   symbol_id: 0x969e210d
   symbol_id: 0x08190210
