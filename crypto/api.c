@@ -408,7 +408,6 @@ struct crypto_tfm *__crypto_alloc_tfm(struct crypto_alg *alg, u32 type,
 		goto out_err;
 
 	tfm->__crt_alg = alg;
-	refcount_set(&tfm->refcnt, 1);
 
 	err = crypto_init_ops(tfm, type, mask);
 	if (err)
@@ -507,7 +506,6 @@ static void *crypto_alloc_tfmmem(struct crypto_alg *alg,
 	tfm = (struct crypto_tfm *)(mem + tfmsize);
 	tfm->__crt_alg = alg;
 	tfm->node = node;
-	refcount_set(&tfm->refcnt, 1);
 
 	return mem;
 }
@@ -662,8 +660,6 @@ void crypto_destroy_tfm(void *mem, struct crypto_tfm *tfm)
 	if (IS_ERR_OR_NULL(mem))
 		return;
 
-	if (!refcount_dec_and_test(&tfm->refcnt))
-		return;
 	alg = tfm->__crt_alg;
 
 	if (!tfm->exit && alg->cra_exit)
