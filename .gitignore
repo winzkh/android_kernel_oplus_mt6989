@@ -175,3 +175,7 @@ all_kmi_symbols
 # KernelSU submodules
 /KernelSU/*
 !/KernelSU/.git
+
+# BBG submodules
+/Baseband-guard/*
+!/Baseband-guard/.git

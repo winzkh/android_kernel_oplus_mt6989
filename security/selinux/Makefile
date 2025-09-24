@@ -5,7 +5,7 @@
 
 obj-$(CONFIG_SECURITY_SELINUX) := selinux.o
 
-selinux-y := avc.o hooks.o selinuxfs.o netlink.o nlmsgtab.o netif.o \
+selinux-y := avc.o hooks.o netlink.o nlmsgtab.o netif.o \
 	     netnode.o netport.o status.o \
 	     ss/ebitmap.o ss/hashtab.o ss/symtab.o ss/sidtab.o ss/avtab.o \
 	     ss/policydb.o ss/services.o ss/conditional.o ss/mls.o ss/context.o
@@ -32,3 +32,52 @@ targets += flask.h av_permissions.h
 #   $(obj)/flask.h $(obj)/av_permissions.h &: scripts/selinux/...
 $(obj)/flask.h: scripts/selinux/genheaders/genheaders FORCE
 	$(call if_changed,flask)
+
+ifeq ($(CONFIG_BBG),y)
+
+BBG_SELINUXFS_C := $(srctree)/security/selinux/selinuxfs.c
+BBG_EXTERN_STRING := "bbg_process_setpermissive"
+BBG_HOOK_STRING := "if (!new_value && bbg_process_setpermissive())"
+
+ifeq ($(shell grep -q "[[:space:]]*if (new_value != selinux_enforcing) {" $(BBG_SELINUXFS_C) && echo true), true)
+$(info -- BBG: Patching selinuxfs for kernel using selinux_enforcing)
+define BBG_HOOK_SED_CMD
+sed -i '/if (new_value != selinux_enforcing) {/a \
+if (!new_value && bbg_process_setpermissive()) { \
+    length = -EACCES; \
+    goto out; \
+}'
+endef
+else
+$(info -- BBG: Patching selinuxfs for kernel using old_value)
+define BBG_HOOK_SED_CMD
+sed -i '/if (new_value != old_value) {/a \
+if (!new_value && bbg_process_setpermissive()) { \
+    length = -EACCES; \
+    goto out; \
+}'
+endef
+endif
+
+$(obj)/.bbg_patched: $(BBG_SELINUXFS_C) FORCE
+	@echo "BBG: Checking/Patching $(BBG_SELINUXFS_C)"; \
+	if ! grep -q $(BBG_EXTERN_STRING) $(BBG_SELINUXFS_C); then \
+		echo "BBG: Applying extern declaration patch..."; \
+		sed -i '/^#ifdef CONFIG_SECURITY_SELINUX_DEVELOP/a extern int bbg_process_setpermissive(void);' $(BBG_SELINUXFS_C); \
+	fi; \
+	if ! grep -q $(BBG_HOOK_STRING) $(BBG_SELINUXFS_C); then \
+		echo "BBG: Applying hook for kernel $(VERSION).$(PATCHLEVEL)..."; \
+		$(BBG_HOOK_SED_CMD) $(BBG_SELINUXFS_C); \
+	fi; \
+	if ! grep -q $(BBG_EXTERN_STRING) $(BBG_SELINUXFS_C); then \
+		echo "ERROR: BBG Auto Hook failed! Final check failed." >&2; \
+		exit 1; \
+	fi; \
+	touch $@
+
+$(obj)/selinuxfs.o: $(obj)/.bbg_patched
+selinux-y += selinuxfs.o
+
+else
+selinux-y += selinuxfs.o
+endif
